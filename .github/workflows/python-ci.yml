@@ -68,6 +68,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          export PYTHONPATH=.
           if ls tests/*.py >/dev/null 2>&1; then
             pytest -q
           else
