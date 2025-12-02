@@ -43,7 +43,7 @@ jobs:
           if [ -f requirements.txt ]; then
             pip install -r requirements.txt
           else
-            echo "No requirements.txt found — skipping dependency installation"
+            echo "No requirements.txt found -- skipping dependency installation"
           fi
 
       - name: Debug: show installed packages and environment
@@ -71,7 +71,7 @@ jobs:
             echo "Running flake8..."
             flake8 .
           else
-            echo "flake8 not installed — skipping lint"
+            echo "flake8 not installed -- skipping lint"
           fi
 
       - name: Run session scripts (with timeout to avoid hangs)
