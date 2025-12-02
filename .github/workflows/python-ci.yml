@@ -1,5 +1,10 @@
 name: Python CI
 
+# Prevent accidental cancellation of other runs; customize the group if needed.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 on:
   push:
     branches: [ main ]
@@ -41,6 +46,24 @@ jobs:
             echo "No requirements.txt found — skipping dependency installation"
           fi
 
+      - name: Debug: show installed packages and environment
+        shell: bash
+        run: |
+          echo "-- python --version --"
+          python --version || true
+          echo "-- which python --"
+          which python || true
+          echo "-- pip --version --"
+          pip --version || true
+          echo "-- pip freeze (top 50 lines) --"
+          pip freeze | sed -n '1,50p' || true
+          echo "-- disk usage --"
+          df -h || true
+          echo "-- environment vars (selected) --"
+          echo "GITHUB_REF=$GITHUB_REF"
+          echo "GITHUB_RUN_ID=$GITHUB_RUN_ID"
+          echo "RUNNER_OS=$RUNNER_OS"
+
       - name: Optional lint (flake8)
         shell: bash
         run: |
@@ -51,10 +74,15 @@ jobs:
             echo "flake8 not installed — skipping lint"
           fi
 
-      - name: Run session scripts
+      - name: Run session scripts (with timeout to avoid hangs)
         shell: bash
         run: |
-          echo "Running session1.py"
-          python session1.py
-          echo "Running session2.py"
-          python session2.py
+          set -euo pipefail
+          echo "Running session1.py (timeout 30s)"
+          timeout 30s python session1.py || {
+            rc=$?; echo "session1.py exited with code $rc"; exit $rc
+          }
+          echo "Running session2.py (timeout 30s)"
+          timeout 30s python session2.py || {
+            rc=$?; echo "session2.py exited with code $rc"; exit $rc
+          }
