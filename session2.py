@@ -24,10 +24,11 @@ def _run_examples():
     greet("Python learner")
 
     # Demonstrate multiple return values
-    sum_, mul_ = calculate(2, 3)
+    a_example, b_example = 2, 3
+    sum_, mul_ = calculate(a_example, b_example)
     print("=" * 40)
     print("Example 1: Unpacking multiple return values")
-    print(f"Input: a = 2, b = 3")
+    print(f"Input: a = {a_example}, b = {b_example}")
     print(f"Sum (a + b): {sum_}")
     print(f"Product (a * b): {mul_}")
     print()
