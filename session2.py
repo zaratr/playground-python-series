@@ -1,23 +1,57 @@
-# Functions in Python
+from __future__ import annotations
+
+import csv
+from pathlib import Path
+from typing import Iterable, List, Dict, Any
+
 
 class Session2:
+    data_dir = Path(__file__).with_name("data")
+    cities_file = data_dir / "cities.csv"
 
     def greet(self, name, greeting="Hello"):
         print(f"{greeting} {name}")
-
 
     def calculate(self, a, b):
         """Return both the sum and product as a tuple."""
         return a + b, a * b
 
-
     def welcome(self, name="Guest"):
         print(f"Welcome {name}")
-
 
     def square(self, x):
         return x * x
 
+    # --- Data tasks ---
+    def load_cities(self, path: Path | None = None) -> List[Dict[str, Any]]:
+        """Load city data from CSV and return dicts with int population."""
+        csv_path = path or self.cities_file
+        if not csv_path.exists():
+            raise FileNotFoundError(f"CSV file not found: {csv_path}")
+
+        rows: List[Dict[str, Any]] = []
+        with csv_path.open(newline="", encoding="utf-8") as handle:
+            reader = csv.DictReader(handle)
+            for row in reader:
+                row["population"] = int(row["population"])
+                rows.append(row)
+        return rows
+
+    def total_population(self, rows: Iterable[Dict[str, Any]]) -> int:
+        return sum(row["population"] for row in rows)
+
+    def average_population(self, rows: Iterable[Dict[str, Any]]) -> float:
+        rows = list(rows)
+        if not rows:
+            raise ValueError("Cannot compute average population of empty data")
+        return self.total_population(rows) / len(rows)
+
+    def top_cities(self, rows: Iterable[Dict[str, Any]], n: int = 3) -> List[str]:
+        rows = list(rows)
+        return [
+            row["city"]
+            for row in sorted(rows, key=lambda r: r["population"], reverse=True)[:n]
+        ]
 
     def _run_examples(self):
         # Basic greeting examples
