@@ -11,7 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.11, 3.10]
+        # Use specific, supported minor versions. Avoid typos like '3.1' (which is NOT '3.11').
+        python-version: [3.12, 3.11]
+      fail-fast: false
 
     steps:
       - name: Checkout repository
@@ -21,6 +23,13 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+
+      - name: Check Python version (debug)
+        shell: bash
+        run: |
+          echo "Python setup:"
+          python --version || true
+          which python || true
 
       - name: Install dependencies (if any)
         shell: bash
