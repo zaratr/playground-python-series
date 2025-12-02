@@ -1,5 +1,3 @@
-import pytest
-
 from session1 import first_name, age2, TOTAL
 from session2 import calculate, square, welcome
 
