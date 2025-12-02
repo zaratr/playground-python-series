@@ -46,7 +46,7 @@ jobs:
             echo "No requirements.txt found -- skipping dependency installation"
           fi
 
-      - name: Debug: show installed packages and environment
+      - name: "Debug: show installed packages and environment"
         shell: bash
         run: |
           echo "-- python --version --"
